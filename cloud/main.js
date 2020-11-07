@@ -59,3 +59,22 @@ Parse.Cloud.define('News_add', async function(req,res){
   newsAdd.set("News_Contain",req.params.contain);
   newsAdd.save()
 });
+
+
+Parse.Cloud.define('place_ADD', async function(req,res){
+  const placeAdd = Parse.Object.extend("Place");
+  const PlaceAdd = new placeAdd();
+  PlaceAdd.set("Place_name",req.params.placeName);
+  PlaceAdd.set("img",req.params.file1);
+  PlaceAdd.set("img_2",req.params.file2);
+  PlaceAdd.set("img_3",req.params.file3);
+  PlaceAdd.set("Place_devices",req.params.placeDevices);
+  PlaceAdd.set("Place_detail",req.params.placeDetail);
+  PlaceAdd.set("Place_max",parseInt(req.params.placeMax));
+  PlaceAdd.set("Place_crash",null);
+  PlaceAdd.set("Place_id",'ว่าง');
+  PlaceAdd.set("Place_type",req.params.placeType);
+  PlaceAdd.set("Place_phone",req.params.placePhone);
+  PlaceAdd.set("Place_address",req.params.placeAddress);
+  PlaceAdd.save()
+});
