@@ -2,6 +2,7 @@ Parse.Cloud.define('place', async function(req, res) {
   const query = new Parse.Query('Place');
   if(req.params.target){query.contains("Place_name",req.params.target)}
   if(req.params.placeid){query.equalTo("Place_id",req.params.placeid)}
+  if(req.params.obId){query.equalTo("objectId",req.params.obId)}
   if(req.params.type){query.contains("Place_type",req.params.type)}
   if(Array.isArray(req.params.devices)&& req.params.devices.length){query.containsAll("Place_devices",req.params.devices)}
   if(req.params.max){query.lessThanOrEqualTo("Place_max",Number(req.params.max))}
