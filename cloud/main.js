@@ -1,7 +1,7 @@
 Parse.Cloud.define('place', async function(req, res) {
   const query = new Parse.Query('Place');
   if(req.params.target){query.contains("Place_name",req.params.target)}
-  if(req.params.placeid){query.equalTo("Place_id",req.params.placeid)}
+  if(req.params.placeid){query.equalTo("objectId",req.params.placeid)}
   if(req.params.obId){query.equalTo("objectId",req.params.obId)}
   if(req.params.type){query.contains("Place_type",req.params.type)}
   if(Array.isArray(req.params.devices)&& req.params.devices.length){query.containsAll("Place_devices",req.params.devices)}
@@ -16,6 +16,10 @@ Parse.Cloud.define('booking', async function(req,res){
   const addbooking = new Addbooking();
   addbooking.set("Name_booking",req.params.Name_booking);
   addbooking.set("Place_id",req.params.Place_id);
+  addbooking.set("Place_name",req.params.Place_name);
+  addbooking.set("Place_contact",req.params.Place_contact);
+  addbooking.set("Context_time",req.params.Context_time);
+  addbooking.set("Context_date",req.params.Context_date);
   addbooking.set("Time_booking",req.params.Time_booking);
   addbooking.set("Date_booking",req.params.Date_booking);
   addbooking.set("Day_booking",req.params.Day_booking.toString());
@@ -26,7 +30,8 @@ Parse.Cloud.define('booking', async function(req,res){
 
 Parse.Cloud.define('placeBooked', async function(req, res) {
   const query = new Parse.Query('PlanBooking');
-  query.equalTo("Place_id",req.params.Place_id);
+  if(req.params.Place_id){query.contains("Place_id",req.params.Place_id)}
+  if(req.params.Place_username){query.equalTo("Name_booking",req.params.Place_username)}
   let results = await query.find();
   return results
 });
@@ -107,3 +112,17 @@ Parse.Cloud.define('place_Del', async function(req, res) {
   place.set("objectId",req.params.delid);
   place.destroy();
 });
+
+ 
+
+
+Parse.Cloud.define('user_Search', async function(req, res) {
+  const query = new Parse.Query('User');
+  if(req.params.username){query.contains("username",req.params.username)}
+  if(req.params.userId){query.equalTo("objectId",req.params.userId)}
+  let results = await query.find();
+  return results
+});
+
+ 
+ 
