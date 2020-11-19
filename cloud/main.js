@@ -77,7 +77,7 @@ Parse.Cloud.define('place_ADD', async function(req,res){
   PlaceAdd.set("Place_devices",req.params.placeDevices);
   PlaceAdd.set("Place_detail",req.params.placeDetail);
   PlaceAdd.set("Place_max",parseInt(req.params.placeMax));
-  PlaceAdd.set("Place_crash",null);
+  PlaceAdd.set("Place_crash",'ไม่มี');
   PlaceAdd.set("Place_id",'ว่าง');
   PlaceAdd.set("Place_type",req.params.placeType);
   PlaceAdd.set("Place_phone",req.params.placePhone);
@@ -123,6 +123,26 @@ Parse.Cloud.define('user_Search', async function(req, res) {
   let results = await query.find();
   return results
 });
+
+Parse.Cloud.define('noti', async function(req,res){
+  const Noti = Parse.Object.extend("Noti");
+  const noti = new Noti();
+  noti.set("place_Name",req.params.place_Name.toString());
+  noti.set("noti_Type",req.params.noti_Type.toString());
+  noti.set("noti_Description",req.params.noti_Description.toString());
+  noti.set("place_Id",req.params.place_Id.toString());
+  noti.set("user_Name",req.params.user_Name.toString());
+  noti.save()
+});
+
+Parse.Cloud.define('noti_Search', async function(req, res) {
+  const query = new Parse.Query('Noti');
+  if(req.params.get == 'forgot'){query.equalTo("noti_Type",'ลืมของ')}
+  if(req.params.get == 'noti'){query.equalTo("noti_Type",'แจ้งเรื่อง')}
+  let results = await query.find();
+  return results
+});
+
 
  
  
