@@ -132,11 +132,13 @@ Parse.Cloud.define('noti', async function(req,res){
   noti.set("noti_Description",req.params.noti_Description.toString());
   noti.set("place_Id",req.params.place_Id.toString());
   noti.set("user_Name",req.params.user_Name.toString());
+  noti.set("status",'ยังไม่รับเรื่อง');
   noti.save()
 });
 
 Parse.Cloud.define('noti_Search', async function(req, res) {
   const query = new Parse.Query('Noti');
+  if(req.params.username){query.equalTo("user_Name",req.params.username)}
   if(req.params.get == 'forgot'){query.equalTo("noti_Type",'ลืมของ')}
   if(req.params.get == 'noti'){query.equalTo("noti_Type",'แจ้งเรื่อง')}
   let results = await query.find();
@@ -145,4 +147,13 @@ Parse.Cloud.define('noti_Search', async function(req, res) {
 
 
  
+Parse.Cloud.define('noti_Reply', async function(req,res){
+  const query = Parse.Object.extend("Noti");
+  const Query = new query();
+  Query.set("objectId",req.params.nOid);
+  Query.save().then((Query) => {
+    if(req.params.nOid){Query.set("status",'รับเรื่องแล้ว')}
+    return Query.save();
+  });
  
+});
