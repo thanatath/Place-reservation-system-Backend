@@ -9,6 +9,8 @@
 
     nodemon index.js
 
+*Use PLACE_DB_FILE.zip to set Schema Database*
+
 ผู้ใช้บริการ
     
 
