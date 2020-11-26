@@ -1,6 +1,7 @@
 Parse.Cloud.define('place', async function(req, res) {
   const query = new Parse.Query('Place');
   if(req.params.target){query.contains("Place_name",req.params.target)}
+  if(req.params.placeName){query.fullText("Place_name",req.params.placeName)}
   if(req.params.placeid){query.equalTo("objectId",req.params.placeid)}
   if(req.params.obId){query.equalTo("objectId",req.params.obId)}
   if(req.params.type){query.contains("Place_type",req.params.type)}
@@ -63,7 +64,7 @@ Parse.Cloud.define('News_add', async function(req,res){
   const NewsAdd = Parse.Object.extend("News");
   const newsAdd = new NewsAdd();
   newsAdd.set("News_Contain",req.params.contain);
-  newsAdd.save()
+  return newsAdd.save()
 });
 
 
@@ -77,7 +78,7 @@ Parse.Cloud.define('place_ADD', async function(req,res){
   PlaceAdd.set("Place_devices",req.params.placeDevices);
   PlaceAdd.set("Place_detail",req.params.placeDetail);
   PlaceAdd.set("Place_max",parseInt(req.params.placeMax));
-  PlaceAdd.set("Place_crash",'ไม่มี');
+  PlaceAdd.set("Place_crash",new Array('ไม่มี'));
   PlaceAdd.set("Place_id",'ว่าง');
   PlaceAdd.set("Place_type",req.params.placeType);
   PlaceAdd.set("Place_phone",req.params.placePhone);
@@ -86,23 +87,23 @@ Parse.Cloud.define('place_ADD', async function(req,res){
 });
 
 Parse.Cloud.define('place_Update', async function(req,res){
-  const placeAdd = Parse.Object.extend("Place");
-  const PlaceAdd = new placeAdd();
-  PlaceAdd.set("objectId",req.params.placeOid);
 
-  PlaceAdd.save().then((PlaceAdd) => {
-    if(req.params.placeName){PlaceAdd.set("Place_name",req.params.placeName)}
-    if(req.params.file1){PlaceAdd.set("img",req.params.file1)}
-    if(req.params.file2){PlaceAdd.set("img_2",req.params.file2)}
-    if(req.params.file3){PlaceAdd.set("img_3",req.params.file3)}
-    if(req.params.placeDevices){PlaceAdd.set("Place_devices",req.params.placeDevices)}
-    if(req.params.placeDetail){PlaceAdd.set("Place_detail",req.params.placeDetail)}
-    if(req.params.placeMax){PlaceAdd.set("Place_max",parseInt(req.params.placeMax))}
-    if(req.params.placeType){PlaceAdd.set("Place_type",req.params.placeType)}
-    if(req.params.placePhone){PlaceAdd.set("Place_phone",req.params.placePhone)}
-    if(req.params.placeAddress){PlaceAdd.set("Place_address",req.params.placeAddress)}
-    return PlaceAdd.save();
-  });
+  const PlaceAdd = new Parse.Query("Place")
+  PlaceAdd.equalTo("objectId",req.params.placeOid);
+  let rs = await PlaceAdd.first()
+ 
+  if(req.params.placeName){rs.set("Place_name",req.params.placeName)}
+  if(req.params.file1){rs.set("img",req.params.file1)}
+  if(req.params.file2){rs.set("img_2",req.params.file2)}
+  if(req.params.file3){rs.set("img_3",req.params.file3)}
+  if(req.params.placeDevices){rs.set("Place_devices",req.params.placeDevices)}
+  if(req.params.placeDetail){rs.set("Place_detail",req.params.placeDetail)}
+  if(req.params.placeMax){rs.set("Place_max",parseInt(req.params.placeMax))}
+  if(req.params.placeType){rs.set("Place_type",req.params.placeType)}
+  if(req.params.placePhone){rs.set("Place_phone",req.params.placePhone)}
+  if(req.params.placeAddress){rs.set("Place_address",req.params.placeAddress)}
+  return rs.save();
+ 
  
 });
 
@@ -148,12 +149,12 @@ Parse.Cloud.define('noti_Search', async function(req, res) {
 
  
 Parse.Cloud.define('noti_Reply', async function(req,res){
-  const query = Parse.Object.extend("Noti");
-  const Query = new query();
-  Query.set("objectId",req.params.nOid);
-  Query.save().then((Query) => {
-    if(req.params.nOid){Query.set("status",'รับเรื่องแล้ว')}
-    return Query.save();
+  const query = new Parse.Query("Noti")
+  query.equalTo("objectId",req.params.nOid);
+  let result = await query.first()
+  if(req.params.nOid)
+    result.set("status",'รับเรื่องแล้ว')
+  return result.save()
   });
  
-});
+ 
